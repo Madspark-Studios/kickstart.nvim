@@ -112,9 +112,10 @@ vim.opt.showmode = false
 
 -- Enable break indent
 vim.opt.breakindent = true
---vim.opt.autoindent = true
---vim.opt.cindent = true
-vim.opt.tabstop = 4
+vim.o.autoindent = true
+vim.o.smartindent = true
+vim.o.tabstop = 4
+vim.o.shiftwidth = 4
 
 -- Save undo history
 vim.opt.undofile = true
@@ -738,7 +739,7 @@ require('lazy').setup({
         -- Disable "format_on_save lsp_fallback" for languages that don't
         -- have a well standardized coding style. You can add additional
         -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true }
+        local disable_filetypes = { cpp = true, c = true }
         --TODO: add and configure cpp
         local lsp_format_opt
         if disable_filetypes[vim.bo[bufnr].filetype] then
@@ -751,9 +752,16 @@ require('lazy').setup({
           lsp_format = lsp_format_opt,
         }
       end,
+      formatters = {
+        clang_format = {
+          command = 'clang-format',
+          prepend_args = { '--style=file', '--fallback-style=Google' },
+        },
+      },
       formatters_by_ft = {
         lua = { 'stylua' },
-        cpp = { 'clang-format' },
+        --c = { 'clang_format' },
+        --cpp = { 'clang_format', 'clangd' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
@@ -957,9 +965,9 @@ require('lazy').setup({
         -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
         --  If you are experiencing weird indenting issues, add the language to
         --  the list of additional_vim_regex_highlighting and disabled languages for indent.
-        additional_vim_regex_highlighting = { 'cpp', 'ruby' },
+        additional_vim_regex_highlighting = { 'c', 'cpp', 'ruby' },
       },
-      indent = { enable = true, disable = { 'cpp', 'ruby' } },
+      indent = { enable = true, disable = { 'c', 'cpp', 'ruby' } },
     },
     -- There are additional nvim-treesitter modules that you can use to interact
     -- with nvim-treesitter. You should go explore a few and see what interests you:
